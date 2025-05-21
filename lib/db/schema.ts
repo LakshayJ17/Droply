@@ -49,3 +49,4 @@ export const filesRelations = relations(files, ({one, many}) => ({
 // Type definitions
 
 export const File = typeof files.$inferSelect
+export const NewFile = typeof files.$inferInsert
