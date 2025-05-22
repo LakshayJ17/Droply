@@ -19,7 +19,7 @@ async function runMigration(){
         console.log("All migrations are successfully done");
         
     } catch(error){
-        console.log("All migrations are successfully done");
+        console.log("Migration failed:", error);
         process.exit(1)
     }
 }
