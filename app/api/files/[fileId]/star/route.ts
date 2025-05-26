@@ -4,22 +4,26 @@ import { auth } from "@clerk/nextjs/server";
 import { eq, and } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
+// PATCH endpoint to toggle the "starred" status of a file for the authenticated user
 export async function PATCH(
     request: NextRequest,
     props: { params: Promise<{ fileId: string }> }
 ) {
     try {
+        // Authenticate the user
         const { userId } = await auth()
         if (!userId) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
 
+        // Extract fileId from route parameters
         const { fileId } = await props.params;
 
         if (!fileId) {
             return NextResponse.json({ error: "File id is required" }, { status: 401 })
         }
 
+        // Fetch the file from the database, ensuring it belongs to the user
         const [file] = await db
             .select()
             .from(files)
@@ -34,8 +38,7 @@ export async function PATCH(
             return NextResponse.json({ error: "File not found" }, { status: 401 })
         }
 
-        // toggle star status
-
+        // Toggle the star status (if starred, unstar; if not starred, star)
         const updatedFiles = await db
             .update(files)
             .set({ isStarred: !file.isStarred })
@@ -43,7 +46,7 @@ export async function PATCH(
                 eq(files.id, fileId),
                 eq(files.userId, userId)
             ))
-            .returning()
+            .returning() // Return the updated file
 
         const updatedFile = updatedFiles[0]
 
