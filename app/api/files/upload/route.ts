@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
         const parentId = formData.get("parentId") as string || null
 
         // Ensure the user making the request matches the authenticated user
-        if (!formUserId !== userId) {
+        if (formUserId !== userId) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
 
